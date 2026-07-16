@@ -1,3 +1,7 @@
+---
+const base = import.meta.env.BASE_URL;
+---
+
 <button
   id="mobile-menu-btn"
   class="md:hidden px-2 py-1.5 text-(--color-text-secondary) hover:text-(--color-accent) transition-colors duration-150"
@@ -35,27 +39,27 @@
     </p>
     <nav class="flex flex-col gap-1">
       <a
-        href="/"
+        href={`${base}`}
         class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
         >Home</a
       >
       <a
-        href="/blog"
+        href={`${base}blog`}
         class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
         >Blog</a
       >
       <a
-        href="/projects"
+        href={`${base}projects`}
         class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
         >Projects</a
       >
       <a
-        href="/about"
+        href={`${base}about`}
         class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
         >About</a
       >
       <a
-        href="/rss.xml"
+        href={`${base}rss.xml`}
         class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
         >RSS</a
       >

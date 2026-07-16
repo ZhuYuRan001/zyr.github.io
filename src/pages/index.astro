@@ -1,6 +1,7 @@
 ---
 import Layout from "@components/Layout.astro";
 import PixelBackground from "@components/PixelBackground";
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout>
@@ -30,19 +31,19 @@ import PixelBackground from "@components/PixelBackground";
       <!-- RPG Menu -->
       <div class="flex flex-col items-center gap-2">
         <a
-          href="/blog"
+          href={`${base}blog`}
           class="font-['Pixelify_Sans'] text-lg text-(--color-text) hover:text-(--color-accent) transition-colors duration-150 menu-cursor"
         >
           Blog
         </a>
         <a
-          href="/projects"
+          href={`${base}projects`}
           class="font-['Pixelify_Sans'] text-lg text-(--color-text) hover:text-(--color-accent) transition-colors duration-150 menu-cursor"
         >
           Projects
         </a>
         <a
-          href="/about"
+          href={`${base}about`}
           class="font-['Pixelify_Sans'] text-lg text-(--color-text) hover:text-(--color-accent) transition-colors duration-150 menu-cursor"
         >
           About

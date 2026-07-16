@@ -2,11 +2,13 @@
 import ThemeToggle from "./ThemeToggle.astro";
 import MobileMenu from "./MobileMenu.astro";
 
+const base = import.meta.env.BASE_URL;
+
 const navItems = [
-  { label: "Home", href: "/" },
-  { label: "Blog", href: "/blog" },
-  { label: "Projects", href: "/projects" },
-  { label: "About", href: "/about" },
+  { label: "Home", href: `${base}` },
+  { label: "Blog", href: `${base}blog` },
+  { label: "Projects", href: `${base}projects` },
+  { label: "About", href: `${base}about` },
 ];
 ---
 
@@ -16,7 +18,7 @@ const navItems = [
 >
   <div class="mx-auto w-full max-w-275 px-6 flex items-center justify-between">
     <a
-      href="/"
+      href={base}
       class="font-['Press_Start_2P'] text-sm no-underline text-(--color-text) hover:text-(--color-accent) transition-colors duration-150"
     >
       ZYR
@@ -35,7 +37,7 @@ const navItems = [
       }
       <div class="flex items-center gap-1 ml-4">
         <a
-          href="./rss.xml"
+          href={`${base}rss.xml`}
           target="_blank"
           rel="noopener noreferrer"
           class="px-2 py-1.5 text-(--color-text-secondary) hover:text-(--color-accent) transition-colors duration-150"
