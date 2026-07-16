@@ -1,0 +1,92 @@
+<button
+  id="mobile-menu-btn"
+  class="md:hidden px-2 py-1.5 text-(--color-text-secondary) hover:text-(--color-accent) transition-colors duration-150"
+  aria-label="Menu"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="22"
+    height="22"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <line x1="3" y1="12" x2="21" y2="12"></line><line
+      x1="3"
+      y1="6"
+      x2="21"
+      y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</button>
+
+<div id="mobile-drawer" class="fixed inset-0 z-50 hidden">
+  <div id="mobile-overlay" class="absolute inset-0 bg-black/40"></div>
+  <div
+    id="mobile-panel"
+    class="absolute bottom-0 left-0 right-0 bg-(--color-panel) pixel-border-t p-6 pb-10 transform translate-y-full transition-transform duration-300"
+  >
+    <p
+      class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-4 text-center"
+    >
+      MENU
+    </p>
+    <nav class="flex flex-col gap-1">
+      <a
+        href="/"
+        class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+        >Home</a
+      >
+      <a
+        href="/blog"
+        class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+        >Blog</a
+      >
+      <a
+        href="/projects"
+        class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+        >Projects</a
+      >
+      <a
+        href="/about"
+        class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+        >About</a
+      >
+      <a
+        href="/rss.xml"
+        class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+        >RSS</a
+      >
+    </nav>
+  </div>
+</div>
+
+<script>
+  const btn = document.getElementById("mobile-menu-btn");
+  const drawer = document.getElementById("mobile-drawer");
+  const overlay = document.getElementById("mobile-overlay");
+  const panel = document.getElementById("mobile-panel");
+
+  if (btn && drawer && panel && overlay) {
+    btn.addEventListener("click", () => {
+      drawer.classList.remove("hidden");
+      requestAnimationFrame(() => {
+        panel.classList.remove("translate-y-full");
+      });
+    });
+
+    const close = () => {
+      panel.classList.add("translate-y-full");
+      setTimeout(() => {
+        drawer.classList.add("hidden");
+      }, 300);
+    };
+
+    overlay.addEventListener("click", close);
+    drawer
+      .querySelectorAll("a")
+      .forEach((a) => a.addEventListener("click", close));
+  }
+</script>

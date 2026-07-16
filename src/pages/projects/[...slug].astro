@@ -1,0 +1,70 @@
+---
+import Layout from "@components/Layout.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects");
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+
+<Layout title={project.data.title} description={project.data.description}>
+  <div class="py-16 px-6">
+    <article class="mx-auto max-w-180">
+      <header class="mb-10 pixel-panel">
+        <div class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-3 opacity-60">
+          ITEM DETAIL
+        </div>
+        <h1 class="font-['Pixelify_Sans'] text-2xl md:text-3xl mb-4 text-(--color-text) font-bold">
+          {project.data.title}
+        </h1>
+        <p class="font-['Pixelify_Sans'] text-(--color-text-secondary) mb-4 opacity-80">
+          {project.data.description}
+        </p>
+        <div class="flex flex-wrap gap-1 mb-3">
+          {
+            project.data.tags.map((tag: string) => (
+              <span class="pixel-tag">{tag}</span>
+            ))
+          }
+        </div>
+        <div class="flex gap-4 mt-4">
+          {
+            project.data.github && (
+              <a
+                href={project.data.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pixel-btn text-xs"
+              >
+                GitHub
+              </a>
+            )
+          }
+          {
+            project.data.demo && (
+              <a
+                href={project.data.demo}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="pixel-btn pixel-btn-primary text-xs"
+              >
+                Live Demo
+              </a>
+            )
+          }
+        </div>
+      </header>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </div>
+</Layout>

@@ -1,0 +1,50 @@
+---
+title: "Getting Started with Astro 7"
+description: "Exploring the new features in Astro 7 including the Rust compiler, Sätteri markdown, and Vite 8."
+date: 2026-07-10
+tags: ["Astro", "Frontend"]
+---
+
+## Why Astro 7?
+
+Astro 7 is a massive leap forward for the framework. With the rewrite of the `.astro` compiler in Rust, builds are now **15-61% faster** in benchmarks. That means less time waiting and more time building.
+
+### Rust Compiler
+
+The new Rust compiler replaces the old Go-based compiler. It's not just faster - it also behaves more predictably:
+
+- No more silent HTML "corrections" that move your elements around
+- JSX-style strictness catches real bugs
+- Whitespace handling matches React conventions
+
+### Sätteri: Markdown in Rust
+
+Sätteri is Astro 7's new default Markdown processor, written in Rust by core team member Erika. It's the single biggest performance win for content-heavy sites.
+
+Built-in features that used to require plugins:
+
+- GFM tables, footnotes, strikethrough
+- Smart punctuation
+- Heading IDs (no more `rehype-slug`!)
+- Math support
+- Directives
+
+### Vite 8 with Rolldown
+
+Vite 8 ships Rolldown, a Rust-based bundler that replaces esbuild and Rollup. It's **10-30x faster** than Rollup.
+
+For most Astro projects, this is a drop-in upgrade with zero configuration changes.
+
+## Getting Started
+
+```bash
+pnpm create astro@latest
+```
+
+Then add your integrations:
+
+```bash
+pnpm astro add react mdx sitemap
+```
+
+That's it. Your project is now running on Astro 7.

@@ -1,0 +1,150 @@
+---
+import Layout from "@components/Layout.astro";
+import ArticleCard from "@components/ArticleCard.astro";
+import { getCollection } from "astro:content";
+
+const posts = await getCollection("blog");
+posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+
+<Layout
+  title="Blog"
+  description="All articles about frontend, design, and life."
+>
+  <div class="py-16 px-6">
+    <div class="mx-auto max-w-275">
+      <h1 class="font-['Press_Start_2P'] text-xl text-(--color-text) mb-4">
+        Blog
+      </h1>
+      <p class="font-['Pixelify_Sans'] text-(--color-text-secondary) mb-8">
+        ━━━━━━━━━━━━━
+      </p>
+
+      <!-- Search -->
+      <div class="mb-8">
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Search..."
+          class="w-full max-w-md px-4 py-2.5 bg-(--color-panel) border-2 border-(--color-border) text-(--color-text) font-['Pixelify_Sans'] text-sm placeholder:text-(--color-text-secondary) focus:outline-none focus:border-(--color-accent) transition-colors"
+        />
+      </div>
+
+      <!-- Tags filter -->
+      <div class="flex flex-wrap gap-2 mb-8">
+        <button
+          data-filter="all"
+          class="tag-btn pixel-tag !bg-(--color-accent) !text-(--color-text) !border-(--color-accent-hover) cursor-pointer"
+        >
+          All
+        </button>
+        {
+          allTags.map((tag) => (
+            <button
+              data-filter={tag}
+              class="tag-btn pixel-tag cursor-pointer hover:border-(--color-accent) transition-colors"
+            >
+              {tag}
+            </button>
+          ))
+        }
+      </div>
+
+      <!-- Empty state -->
+      {
+        posts.length === 0 && (
+          <div class="pixel-panel text-center py-12">
+            <p class="font-['Press_Start_2P'] text-xs text-(--color-text-secondary) mb-2">
+              NO DATA
+            </p>
+            <p class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) opacity-70">
+              There are no articles yet. Check back later!
+            </p>
+          </div>
+        )
+      }
+
+      <!-- Article list -->
+      <div id="article-list" class="pixel-panel">
+        {
+          posts.map((post) => (
+            <div
+              class="article-item"
+              data-tags={JSON.stringify(post.data.tags)}
+              data-title={post.data.title.toLowerCase()}
+            >
+              <ArticleCard
+                href={`/blog/${post.id}`}
+                title={post.data.title}
+                description={post.data.description}
+                date={post.data.date.toISOString().split("T")[0]}
+                tags={post.data.tags}
+                readingTime={`${Math.ceil((post.body || "").length / 500)} min`}
+              />
+            </div>
+          ))
+        }
+      </div>
+
+      <div id="no-results" class="hidden pixel-panel text-center py-12 mt-4">
+        <p class="font-['Press_Start_2P'] text-xs text-(--color-text-secondary) mb-2">
+          NO RESULTS
+        </p>
+        <p class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) opacity-70">
+          No matching articles found.
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const searchInput = document.getElementById("search-input") as HTMLInputElement;
+  const tagButtons = document.querySelectorAll(".tag-btn");
+  const articles = document.querySelectorAll(".article-item");
+  const noResults = document.getElementById("no-results");
+
+  let activeTag = "all";
+
+  function filterArticles() {
+    const query = searchInput?.value.toLowerCase() || "";
+    let visibleCount = 0;
+
+    articles.forEach((article) => {
+      const tags = JSON.parse(article.getAttribute("data-tags") || "[]");
+      const title = article.getAttribute("data-title") || "";
+      const matchesTag = activeTag === "all" || tags.includes(activeTag);
+      const matchesSearch = !query || title.includes(query);
+      const visible = matchesTag && matchesSearch;
+      (article as HTMLElement).style.display = visible ? "" : "none";
+      if (visible) visibleCount++;
+    });
+
+    if (noResults) {
+      noResults.classList.toggle("hidden", visibleCount > 0);
+    }
+  }
+
+  searchInput?.addEventListener("input", filterArticles);
+
+  tagButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      activeTag = btn.getAttribute("data-filter") || "all";
+      tagButtons.forEach((b) => {
+        const isActive = b.getAttribute("data-filter") === activeTag;
+        if (isActive) {
+          b.style.background = "var(--color-accent)";
+          b.style.color = "var(--color-text)";
+          b.style.borderColor = "var(--color-accent-hover)";
+        } else {
+          b.style.background = "";
+          b.style.color = "";
+          b.style.borderColor = "";
+        }
+      });
+      filterArticles();
+    });
+  });
+</script>

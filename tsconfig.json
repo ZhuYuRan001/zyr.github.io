@@ -1,23 +1,18 @@
 {
+  "extends": "astro/tsconfigs/strict",
   "compilerOptions": {
-    "module": "ESNext",
-    "target": "ESNext",
-    "moduleResolution": "Node",
-    "types": ["vite/client", "node"],
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "jsx": "react-jsx",
-    "outDir": "./docs"
+    "jsxImportSource": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@components/*": ["src/components/*"],
+      "@layouts/*": ["src/layouts/*"],
+      "@content/*": ["src/content/*"],
+      "@styles/*": ["src/styles/*"],
+      "@utils/*": ["src/utils/*"]
+    }
   },
-  "include": [
-    "src/**/*",
-    "env.d.ts",
-    "src/**/*.ts",
-    "src/**/*.d.ts",
-    "src/**/*.tsx",
-    "src/**/*.vue", // Include .vue files
-    "auto-imports.d.ts",
-    "src/router/index.ts"
-  ]
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"]
 }

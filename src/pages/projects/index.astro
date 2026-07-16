@@ -1,0 +1,70 @@
+---
+import Layout from "@components/Layout.astro";
+import { getCollection } from "astro:content";
+
+const projects = await getCollection("projects");
+projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const itemIcons = ["⚔", "🛡", "🏹", "🔮", "💊", "📖"];
+---
+
+<Layout title="Projects" description="Projects I've built and contributed to.">
+  <div class="py-16 px-6">
+    <div class="mx-auto max-w-275">
+      <h1 class="font-['Press_Start_2P'] text-xl text-(--color-text) mb-2">
+        INVENTORY
+      </h1>
+      <p class="font-['Pixelify_Sans'] text-(--color-text-secondary) mb-8 opacity-70">
+        Equipment & Items collected on the journey.
+      </p>
+
+      <!-- Empty state -->
+      {
+        projects.length === 0 && (
+          <div class="pixel-panel text-center py-12">
+            <p class="font-['Press_Start_2P'] text-xs text-(--color-text-secondary) mb-2">
+              EMPTY
+            </p>
+            <p class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) opacity-70">
+              No items in inventory yet.
+            </p>
+          </div>
+        )
+      }
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {
+          projects.map((project, i) => (
+            <a
+              href={`/projects/${project.id}`}
+              class="pixel-card group block no-underline transition-transform duration-100 hover:-translate-y-0.5"
+            >
+              <div class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-3 opacity-60">
+                {itemIcons[i % itemIcons.length]} ITEM
+              </div>
+              <h2 class="font-['Pixelify_Sans'] text-lg text-(--color-text) font-bold group-hover:text-(--color-accent) transition-colors mb-2">
+                {project.data.title}
+              </h2>
+              <p class="text-(--color-text-secondary) text-sm font-['Pixelify_Sans'] mb-3 opacity-70">
+                {project.data.description}
+              </p>
+              <div class="flex flex-wrap gap-1 mb-3">
+                {project.data.tags.map((tag) => (
+                  <span class="pixel-tag">{tag}</span>
+                ))}
+              </div>
+              <div class="flex gap-3">
+                {project.data.github && (
+                  <span class="font-['Pixelify_Sans'] text-xs text-(--color-accent) hover:underline">GitHub</span>
+                )}
+                {project.data.demo && (
+                  <span class="font-['Pixelify_Sans'] text-xs text-(--color-accent) hover:underline">Live Demo</span>
+                )}
+              </div>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</Layout>

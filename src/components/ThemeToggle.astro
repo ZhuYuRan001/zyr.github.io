@@ -1,0 +1,80 @@
+<button
+  id="theme-toggle"
+  class="px-2 py-1.5 text-(--color-text-secondary) hover:text-(--color-accent) hover:bg-(--color-surface) transition-colors duration-150"
+  aria-label="Toggle dark mode"
+>
+  <svg
+    id="sun-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="block"
+  >
+    <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"
+    ></line><line x1="12" y1="21" x2="12" y2="23"></line><line
+      x1="4.22"
+      y1="4.22"
+      x2="5.64"
+      y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"
+    ></line><line x1="1" y1="12" x2="3" y2="12"></line><line
+      x1="21"
+      y1="12"
+      x2="23"
+      y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"
+    ></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+  </svg>
+  <svg
+    id="moon-icon"
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="hidden"
+  >
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+</button>
+
+<script>
+  function setTheme(isDark: boolean) {
+    document.documentElement.classList.toggle("dark", isDark);
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+    const sun = document.getElementById("sun-icon");
+    const moon = document.getElementById("moon-icon");
+    if (sun && moon) {
+      sun.classList.toggle("hidden", isDark);
+      sun.classList.toggle("block", !isDark);
+      moon.classList.toggle("hidden", !isDark);
+      moon.classList.toggle("block", isDark);
+    }
+  }
+
+  function initTheme() {
+    // 默认夜间模式，只有显式选择日间模式才切换
+    const storedTheme = localStorage.getItem("theme");
+    const isDark = storedTheme !== "light";
+    setTheme(isDark);
+
+    // 重新绑定点击事件（导航后 DOM 元素会被替换，需要重新绑定）
+    document.getElementById("theme-toggle")?.addEventListener("click", () => {
+      const currentDark = document.documentElement.classList.contains("dark");
+      setTheme(!currentDark);
+    });
+  }
+
+  initTheme();
+
+  // Astro view transitions: 每次导航完成后重新初始化主题和事件
+  document.addEventListener("astro:after-swap", initTheme);
+</script>

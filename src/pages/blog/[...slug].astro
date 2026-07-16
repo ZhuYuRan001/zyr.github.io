@@ -1,0 +1,61 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "@components/Layout.astro";
+import TOC from "@components/TOC";
+import GiscusComments from "@components/GiscusComments";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog");
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const readingTime = `${Math.ceil((post.body || "").length / 500)} min`;
+---
+
+<Layout title={post.data.title} description={post.data.description}>
+  <div class="py-12 px-6">
+    <div class="mx-auto max-w-275 flex gap-12">
+      <!-- Main content -->
+      <article class="flex-1 min-w-0 max-w-180 mx-auto">
+        <header class="mb-10 pixel-panel">
+          <div class="flex flex-wrap items-center gap-2 mb-3 text-xs text-(--color-text-secondary) font-['Pixelify_Sans']">
+            <time datetime={post.data.date.toISOString()}>
+              {post.data.date.toISOString().split("T")[0]}
+            </time>
+            <span class="opacity-30">·</span>
+            <span>{readingTime}</span>
+          </div>
+          <h1 class="font-['Pixelify_Sans'] text-2xl md:text-3xl mb-4 text-(--color-text) font-bold">
+            {post.data.title}
+          </h1>
+          <div class="flex flex-wrap gap-1">
+            {
+              post.data.tags.map((tag: string) => (
+                <span class="pixel-tag">{tag}</span>
+              ))
+            }
+          </div>
+          <div class="mt-3 text-[10px] font-['Press_Start_2P'] text-(--color-accent) opacity-50">
+            QUEST LOG
+          </div>
+        </header>
+
+        <div class="prose">
+          <Content />
+        </div>
+
+        <GiscusComments client:only="react" />
+      </article>
+
+      <!-- TOC sidebar -->
+      <aside class="hidden xl:block w-56 shrink-0">
+        <TOC client:load />
+      </aside>
+    </div>
+  </div>
+</Layout>

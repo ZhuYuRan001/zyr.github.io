@@ -1,0 +1,55 @@
+---
+export interface Props {
+  href: string;
+  title: string;
+  description?: string;
+  date?: string;
+  tags?: string[];
+  readingTime?: string;
+}
+
+const { href, title, description, date, tags = [], readingTime } = Astro.props;
+---
+
+<a
+  href={href}
+  class="rpg-list-item group block no-underline"
+>
+  <span class="cursor menu-cursor">▶</span>
+  <div class="flex-1 min-w-0">
+    <div class="flex items-center gap-2 mb-1">
+      <h3 class="font-['Pixelify_Sans'] text-base text-(--color-text) group-hover:text-(--color-accent) font-bold m-0">
+        {title}
+      </h3>
+      {readingTime && (
+        <span class="font-['Press_Start_2P'] text-[9px] text-(--color-accent) opacity-60 shrink-0">
+          LV.{Math.floor(Math.random() * 20) + 1}
+        </span>
+      )}
+    </div>
+
+    {description && (
+      <p class="text-(--color-text-secondary) text-sm leading-relaxed font-['Pixelify_Sans'] opacity-70 mb-2 line-clamp-2">
+        {description}
+      </p>
+    )}
+
+    <div class="flex flex-wrap items-center gap-2 text-[11px] text-(--color-text-secondary) font-['Pixelify_Sans']">
+      {date && <time datetime={date}>{date}</time>}
+      {readingTime && (
+        <>
+          <span class="opacity-30">·</span>
+          <span>{readingTime}</span>
+        </>
+      )}
+    </div>
+
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-1 mt-2">
+        {tags.map((tag) => (
+          <span class="pixel-tag">{tag}</span>
+        ))}
+      </div>
+    )}
+  </div>
+</a>

@@ -1,0 +1,596 @@
+@import "tailwindcss";
+
+@layer base {
+  /* ========================================
+     PRD Color Palette - Day Theme
+     ======================================== */
+  :root {
+    /* Sky & Environment */
+    --color-sky: #87CEEB;
+    --color-cloud: #F8F8F8;
+    --color-grass: #7BC96F;
+    --color-forest: #3A7D44;
+    --color-ground: #D4A373;
+
+    /* Surfaces */
+    --color-bg: #E8F4FD;
+    --color-bg-secondary: #D0E8F8;
+    --color-panel: #F8F8F8;
+    --color-card: #FFFEF5;
+    --color-surface: #FAF0E1;
+
+    /* Text */
+    --color-text: #2B2B2B;
+    --color-text-secondary: #5A4E41;
+
+    /* UI */
+    --color-accent: #FFD166;
+    --color-accent-hover: #FFC107;
+    --color-danger: #D95D39;
+    --color-water: #4EA8DE;
+    --color-wood: #8B5A2B;
+    --color-star: #FFF3B0;
+
+    /* Pixel Borders */
+    --color-border: #2E1F14;
+    --color-border-light: #5A4E41;
+    --color-shadow: #5C4033;
+
+    /* Pixel dimensions */
+    --pixel-border-width: 3px;
+    --pixel-border-inner: 1px;
+    --header-height: 72px;
+
+    /* Code */
+    --color-code-bg: #1F2430;
+    --color-code-text: #ECECEC;
+    --color-selection: #87CEEB;
+
+    /* Font stacks */
+    --font-title: "Pixelify Sans", sans-serif;
+    --font-body: "Maple Mono CN", "Noto Sans SC", sans-serif;
+    --font-pixel: "Press Start 2P", monospace;
+    --font-code: "JetBrains Mono", monospace;
+    --font-ui: "Pixelify Sans", sans-serif;
+  }
+
+  /* ========================================
+     PRD Color Palette - Night Theme
+     ======================================== */
+  .dark {
+    --color-bg: #1F2430;
+    --color-bg-secondary: #2C3446;
+    --color-panel: #2C3446;
+    --color-card: #2C3446;
+    --color-surface: #2A3040;
+
+    --color-text: #ECECEC;
+    --color-text-secondary: #8E95A8;
+    --color-accent: #F2CC8F;
+    --color-accent-hover: #FFD166;
+    --color-danger: #D95D39;
+    --color-water: #5DADEC;
+    --color-grass: #6BA368;
+    --color-forest: #4A7D4A;
+    --color-ground: #8B7355;
+
+    --color-border: #5E6680;
+    --color-border-light: #4A5060;
+    --color-shadow: #3A4050;
+    --color-code-bg: #1A1D28;
+    --color-selection: #3A4A60;
+  }
+
+  /* ========================================
+     Reset & Base
+     ======================================== */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  *::selection {
+    background-color: var(--color-selection);
+    color: var(--color-text);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.8;
+    -webkit-font-smoothing: auto;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    image-rendering: pixelated;
+  }
+
+  /* ========================================
+     Pixel Chessboard Wipe (View Transitions)
+     从右往左像素棋盘擦除效果
+     ======================================== */
+  ::view-transition-old(root) {
+    /* 旧页面保持在原位不动 */
+  }
+
+  ::view-transition-new(root) {
+    animation: pixel-wipe 0.5s steps(10) forwards;
+    clip-path: inset(0 0 0 0);
+    /* 棋盘格遮罩，像素块尺寸 16px */
+    mask-image:
+      linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%),
+      linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%);
+    mask-size: 16px 16px;
+    mask-position: 0 0, 8px 8px;
+    mask-repeat: repeat;
+    -webkit-mask-image:
+      linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%),
+      linear-gradient(45deg, #000 25%, transparent 25%, transparent 75%, #000 75%);
+    -webkit-mask-size: 16px 16px;
+    -webkit-mask-position: 0 0, 8px 8px;
+    -webkit-mask-repeat: repeat;
+    image-rendering: pixelated;
+  }
+
+  @keyframes pixel-wipe {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+
+  /* ========================================
+     Typography (PRD)
+     ======================================== */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-title);
+    font-weight: 700;
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+
+  h1 { font-size: 2rem; margin-bottom: 1rem; }
+  h2 { font-size: 1.5rem; margin-top: 2rem; margin-bottom: 0.75rem; }
+  h3 { font-size: 1.25rem; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+  h4 { font-size: 1.1rem; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+
+  p {
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+  }
+
+  a {
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.15s ease;
+  }
+
+  a:hover {
+    color: var(--color-accent-hover);
+  }
+
+  /* ========================================
+     Pixel Cursor (PRD)
+     ======================================== */
+  * {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><rect x='2' y='1' width='8' height='2' fill='white'/><rect x='2' y='3' width='2' height='2' fill='white'/><rect x='6' y='3' width='2' height='2' fill='white'/><rect x='2' y='5' width='2' height='2' fill='white'/><rect x='4' y='5' width='2' height='2' fill='white'/><rect x='2' y='7' width='2' height='2' fill='white'/><rect x='2' y='9' width='2' height='2' fill='white'/><rect x='2' y='11' width='2' height='2' fill='white'/><rect x='0' y='13' width='2' height='2' fill='white'/></svg>") 2 1, auto;
+  }
+
+  a, button, [role="button"], input, select, textarea {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'><rect x='2' y='1' width='8' height='2' fill='%23FFD166'/><rect x='2' y='3' width='2' height='2' fill='%23FFD166'/><rect x='6' y='3' width='2' height='2' fill='%23FFD166'/><rect x='2' y='5' width='2' height='2' fill='%23FFD166'/><rect x='4' y='5' width='2' height='2' fill='%23FFD166'/><rect x='2' y='7' width='2' height='2' fill='%23FFD166'/><rect x='2' y='9' width='2' height='2' fill='%23FFD166'/><rect x='2' y='11' width='2' height='2' fill='%23FFD166'/><rect x='0' y='13' width='2' height='2' fill='%23FFD166'/></svg>") 2 1, pointer;
+  }
+
+  /* ========================================
+     Pixel Button Base
+     ======================================== */
+  .pixel-btn {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    padding: 0.625rem 1.5rem;
+    border: var(--pixel-border-width) solid var(--color-border);
+    background: var(--color-panel);
+    color: var(--color-text);
+    text-decoration: none;
+    text-align: center;
+    image-rendering: pixelated;
+    transition: transform 0.1s ease, background 0.15s ease;
+    position: relative;
+  }
+
+  .pixel-btn::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: var(--pixel-border-inner) solid rgba(255, 255, 255, 0.4);
+    pointer-events: none;
+  }
+
+  .pixel-btn:hover {
+    transform: translateY(-2px);
+    background: var(--color-accent);
+    color: var(--color-text);
+  }
+
+  .pixel-btn:active {
+    transform: translateY(1px);
+  }
+
+  .pixel-btn-primary {
+    background: var(--color-accent);
+    border-color: var(--color-border);
+    color: var(--color-text);
+    font-weight: 700;
+  }
+
+  .pixel-btn-primary:hover {
+    background: var(--color-accent-hover);
+    color: var(--color-text);
+  }
+
+  .pixel-btn-danger {
+    background: var(--color-danger);
+    border-color: var(--color-border);
+    color: #fff;
+  }
+
+  /* ========================================
+     Pixel Panel / Window (SNES style)
+     ======================================== */
+  .pixel-panel {
+    background: var(--color-panel);
+    border: var(--pixel-border-width) solid var(--color-border);
+    padding: 1rem;
+    position: relative;
+    image-rendering: pixelated;
+  }
+
+  .pixel-panel::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: var(--pixel-border-inner) solid rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+  }
+
+  .pixel-panel::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: var(--pixel-border-inner) solid rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+  }
+
+  /* ========================================
+     Pixel Card
+     ======================================== */
+  .pixel-card {
+    background: var(--color-card);
+    border: var(--pixel-border-width) solid var(--color-border);
+    padding: 1rem;
+    position: relative;
+    image-rendering: pixelated;
+  }
+
+  .pixel-card::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: var(--pixel-border-inner) solid rgba(255, 255, 255, 0.3);
+    pointer-events: none;
+  }
+
+  /* ========================================
+     Pixel Border Utilities
+     ======================================== */
+  .pixel-border {
+    border: var(--pixel-border-width) solid var(--color-border);
+  }
+
+  .pixel-border-b {
+    border-bottom: var(--pixel-border-width) solid var(--color-border);
+  }
+
+  .pixel-border-t {
+    border-top: var(--pixel-border-width) solid var(--color-border);
+  }
+
+  /* ========================================
+     RPG Menu Cursor
+     ======================================== */
+  .menu-cursor::before {
+    content: "▶";
+    margin-right: 0.5rem;
+    color: var(--color-accent);
+    font-size: 0.75rem;
+  }
+
+  .menu-cursor-active::before {
+    content: "▶";
+    margin-right: 0.5rem;
+    color: var(--color-accent);
+    font-size: 0.75rem;
+    animation: cursor-blink 0.6s step-end infinite;
+  }
+
+  @keyframes cursor-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ========================================
+     RPG Separator
+     ======================================== */
+  .rpg-divider {
+    border: none;
+    border-top: 2px solid var(--color-border);
+    margin: 1rem 0;
+    position: relative;
+  }
+
+  .rpg-divider::before,
+  .rpg-divider::after {
+    content: "◆";
+    position: absolute;
+    top: -0.55rem;
+    font-size: 0.6rem;
+    color: var(--color-accent);
+  }
+
+  .rpg-divider::before { left: 0; }
+  .rpg-divider::after { right: 0; }
+
+  /* ========================================
+     RPG Horizontal Rule (for sections)
+     ======================================== */
+  .rpg-hr-full {
+    width: 100%;
+    text-align: center;
+    border: none;
+    border-top: 2px solid var(--color-border);
+    margin: 1.5rem 0;
+    overflow: visible;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    color: var(--color-text-secondary);
+  }
+
+  .rpg-hr-full::after {
+    content: "━━━━━━━━━━━━━━━━━━";
+    display: block;
+    margin-top: -0.5rem;
+    letter-spacing: 0;
+  }
+
+  /* ========================================
+     RPG List Item
+     ======================================== */
+  .rpg-list-item {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border-light);
+    transition: transform 0.1s ease;
+  }
+
+  .rpg-list-item:hover {
+    transform: translateX(4px);
+  }
+
+  .rpg-list-item .cursor {
+    color: var(--color-accent);
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    flex-shrink: 0;
+  }
+
+  .rpg-list-item:hover .cursor {
+    opacity: 1;
+    animation: cursor-blink 0.6s step-end infinite;
+  }
+
+  /* ========================================
+     Code Block (Pixel Window Style)
+     ======================================== */
+  code {
+    font-family: var(--font-code);
+    font-size: 0.85em;
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    padding: 0.15em 0.35em;
+    border: 1px solid var(--color-border-light);
+  }
+
+  pre {
+    background: var(--color-code-bg);
+    border: var(--pixel-border-width) solid var(--color-border);
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    position: relative;
+    image-rendering: pixelated;
+  }
+
+  pre::after {
+    content: "";
+    position: absolute;
+    inset: 2px;
+    border: var(--pixel-border-inner) solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+  }
+
+  pre code {
+    background: none;
+    color: var(--color-code-text);
+    padding: 1rem 1.25rem;
+    display: block;
+    border: none;
+    font-size: 0.85em;
+    line-height: 1.7;
+  }
+
+  /* ========================================
+     Blockquote
+     ======================================== */
+  blockquote {
+    border-left: var(--pixel-border-width) solid var(--color-accent);
+    background: var(--color-surface);
+    padding: 0.75rem 1.25rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--color-text-secondary);
+    position: relative;
+  }
+
+  /* ========================================
+     Images (Pixel Frame)
+     ======================================== */
+  img {
+    border: var(--pixel-border-width) solid var(--color-border);
+    max-width: 100%;
+    height: auto;
+    image-rendering: auto;
+  }
+
+  /* ========================================
+     Table
+     ======================================== */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    border: var(--pixel-border-width) solid var(--color-border);
+  }
+
+  th, td {
+    border: 1px solid var(--color-border-light);
+    padding: 0.5rem 0.75rem;
+    text-align: left;
+    font-family: var(--font-ui);
+    font-size: 0.9rem;
+  }
+
+  th {
+    background-color: var(--color-surface);
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  /* ========================================
+     Tag / Badge (Pixel)
+     ======================================== */
+  .pixel-tag {
+    display: inline-block;
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border: 2px solid var(--color-border);
+    background: var(--color-surface);
+    color: var(--color-text-secondary);
+    image-rendering: pixelated;
+  }
+
+  /* ========================================
+     TOC
+     ======================================== */
+  .toc {
+    position: sticky;
+    top: calc(var(--header-height) + 1rem);
+  }
+
+  .toc a {
+    display: block;
+    padding: 0.3rem 0;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    transition: color 0.1s ease, padding-left 0.1s ease;
+    text-decoration: none;
+  }
+
+  .toc a:hover,
+  .toc a.active {
+    color: var(--color-accent);
+    padding-left: 0.5rem;
+  }
+
+  .toc a::before {
+    content: "▸ ";
+    opacity: 0;
+    transition: opacity 0.1s ease;
+    color: var(--color-accent);
+  }
+
+  .toc a.active::before {
+    opacity: 1;
+  }
+
+  .toc a[data-depth="3"] {
+    padding-left: 1.25rem;
+    font-size: 0.8rem;
+  }
+
+  /* ========================================
+     Code Copy Button
+     ======================================== */
+  .code-block {
+    position: relative;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    font-family: var(--font-ui);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    background: rgba(0, 0, 0, 0.4);
+    color: rgba(255, 255, 255, 0.6);
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease, background 0.15s ease;
+    image-rendering: pixelated;
+  }
+
+  .code-block:hover .copy-btn {
+    opacity: 1;
+  }
+
+  .copy-btn:hover {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+  }
+
+  .copy-btn:active {
+    transform: translateY(1px);
+  }
+
+  /* ========================================
+     Scrollbar (Pixel)
+     ======================================== */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--color-bg-secondary);
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border);
+    border: 1px solid var(--color-border-light);
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-secondary);
+  }
+}
