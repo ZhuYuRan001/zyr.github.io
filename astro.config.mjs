@@ -6,7 +6,7 @@ import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
-  site: "https://zyr.me",
+  site: "https://zhuyuran001.github.io",
   integrations: [
     react(),
     mdx(),
