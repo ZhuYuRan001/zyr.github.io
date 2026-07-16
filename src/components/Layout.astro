@@ -55,7 +55,10 @@ const { title, description } = Astro.props;
   </head>
   <body class="min-h-screen flex flex-col relative">
     <Header />
-    <main class="flex-1 pt-18 relative" style="zIndex: 2;">
+    <main
+      class="flex-1 pt-18 relative flex items-center justify-center"
+      style="zIndex: 2;"
+    >
       <slot />
     </main>
     <Footer />

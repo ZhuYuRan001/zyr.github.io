@@ -1,127 +1,53 @@
 ---
 import Layout from "@components/Layout.astro";
-import ArticleCard from "@components/ArticleCard.astro";
 import PixelBackground from "@components/PixelBackground";
-import { getCollection } from "astro:content";
-
-const posts = await getCollection("blog");
-posts.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const recentPosts = posts.slice(0, 5);
-
-const projects = await getCollection("projects");
-projects.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-const featuredProjects = projects.slice(0, 3);
 ---
 
 <Layout>
   <!-- Pixel Background (animates independently) -->
   <PixelBackground client:only="react" />
 
-  <!-- Hero: RPG Speech Bubble -->
-  <section class="relative py-24 px-6" style="zIndex: 1;">
-    <div class="mx-auto max-w-275 text-center">
+  <!-- Hero: centered full-screen -->
+  <section
+    class="flex items-center justify-center h-full px-6"
+    style="zIndex: 1; position: relative;"
+  >
+    <div class="text-center">
       <!-- Speech Bubble -->
       <div class="inline-block pixel-panel mb-8">
-        <p class="font-['Press_Start_2P'] text-xs md:text-sm text-(--color-text) mb-2">
+        <p
+          class="font-['Press_Start_2P'] text-xs md:text-sm text-(--color-text) mb-2"
+        >
           Hello! Welcome back!
         </p>
-        <p class="font-['Pixelify_Sans'] text-base text-(--color-text-secondary)">
+        <p
+          class="font-['Pixelify_Sans'] text-base text-(--color-text-secondary)"
+        >
           What would you like to explore?
         </p>
       </div>
 
       <!-- RPG Menu -->
-      <div class="flex flex-col items-center gap-2 mb-6">
-        <a href="/blog" class="font-['Pixelify_Sans'] text-lg text-(--color-text) hover:text-(--color-accent) transition-colors duration-150 menu-cursor">
+      <div class="flex flex-col items-center gap-2">
+        <a
+          href="/blog"
+          class="font-['Pixelify_Sans'] text-lg text-(--color-text) hover:text-(--color-accent) transition-colors duration-150 menu-cursor"
+        >
           Blog
         </a>
-        <a href="/projects" class="font-['Pixelify_Sans'] text-lg text-(--color-text) hover:text-(--color-accent) transition-colors duration-150 menu-cursor">
+        <a
+          href="/projects"
+          class="font-['Pixelify_Sans'] text-lg text-(--color-text) hover:text-(--color-accent) transition-colors duration-150 menu-cursor"
+        >
           Projects
         </a>
-        <a href="/about" class="font-['Pixelify_Sans'] text-lg text-(--color-text) hover:text-(--color-accent) transition-colors duration-150 menu-cursor">
+        <a
+          href="/about"
+          class="font-['Pixelify_Sans'] text-lg text-(--color-text) hover:text-(--color-accent) transition-colors duration-150 menu-cursor"
+        >
           About
         </a>
       </div>
     </div>
   </section>
-
-  <!-- Divider -->
-  <div class="mx-auto max-w-275 px-6">
-    <hr class="rpg-divider" />
-  </div>
-
-  <!-- Blog Section -->
-  {
-    recentPosts.length > 0 && (
-      <section class="py-12 px-6" style="zIndex: 1; position: relative;">
-        <div class="mx-auto max-w-275">
-          <h2 class="font-['Press_Start_2P'] text-sm text-(--color-text) mb-8 text-center">
-            ━━ BLOG ━━
-          </h2>
-
-          <div class="pixel-panel">
-            {recentPosts.map((post) => (
-              <ArticleCard
-                href={`/blog/${post.id}`}
-                title={post.data.title}
-                description={post.data.description}
-                date={post.data.date.toISOString().split("T")[0]}
-                tags={post.data.tags}
-                readingTime={`${Math.ceil((post.body || "").length / 500)} min`}
-              />
-            ))}
-          </div>
-
-          <div class="text-center mt-6">
-            <a href="/blog" class="pixel-btn">
-              More Articles
-            </a>
-          </div>
-        </div>
-      </section>
-    )
-  }
-
-  <!-- Projects Section -->
-  {
-    featuredProjects.length > 0 && (
-      <section class="py-12 px-6" style="zIndex: 1; position: relative;">
-        <div class="mx-auto max-w-275">
-          <h2 class="font-['Press_Start_2P'] text-sm text-(--color-text) mb-8 text-center">
-            ━━ INVENTORY ━━
-          </h2>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {featuredProjects.map((project) => (
-              <a
-                href={`/projects/${project.id}`}
-                class="pixel-card group block no-underline transition-transform duration-100 hover:-translate-y-0.5"
-              >
-                <div class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-3 opacity-60">
-                  {["⚔", "🛡", "🏹"][featuredProjects.indexOf(project)]} EQUIP
-                </div>
-                <h3 class="font-['Pixelify_Sans'] text-base text-(--color-text) font-bold group-hover:text-(--color-accent) transition-colors mb-2">
-                  {project.data.title}
-                </h3>
-                <p class="text-(--color-text-secondary) text-sm font-['Pixelify_Sans'] opacity-70">
-                  {project.data.description}
-                </p>
-                <div class="flex flex-wrap gap-1 mt-3">
-                  {project.data.tags.map((tag) => (
-                    <span class="pixel-tag">{tag}</span>
-                  ))}
-                </div>
-              </a>
-            ))}
-          </div>
-
-          <div class="text-center mt-6">
-            <a href="/projects" class="pixel-btn">
-              View All
-            </a>
-          </div>
-        </div>
-      </section>
-    )
-  }
 </Layout>

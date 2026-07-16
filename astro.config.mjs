@@ -7,6 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   site: "https://zhuyuran001.github.io",
+  base: "/me/",
   integrations: [
     react(),
     mdx(),
