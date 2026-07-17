@@ -1,13 +1,16 @@
 ---
 import Layout from "@components/Layout.astro";
-import avatar from "../static/avatar.png";
-import { t } from "../i18n/utils";
-import type { Locale } from "../i18n/translations";
+import avatar from "../../static/avatar.png";
+import { t } from "../../i18n/utils";
+import type { Locale } from "../../i18n/translations";
 
 const locale = (Astro.currentLocale || "zh") as Locale;
 ---
 
-<Layout title={t("nav.about", locale)} description={t("about.bioText", locale)}>
+<Layout
+  title={t("nav.about", locale)}
+  description={t("about.bioText", locale)}
+>
   <div class="py-16 px-6">
     <div class="mx-auto max-w-180">
       <h1

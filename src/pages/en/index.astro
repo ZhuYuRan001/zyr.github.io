@@ -1,8 +1,8 @@
 ---
 import Layout from "@components/Layout.astro";
 import PixelBackground from "@components/PixelBackground";
-import { t, localizedPath } from "../i18n/utils";
-import type { Locale } from "../i18n/translations";
+import { t, localizedPath } from "../../i18n/utils";
+import type { Locale } from "../../i18n/translations";
 
 const base = import.meta.env.BASE_URL;
 const locale = (Astro.currentLocale || "zh") as Locale;

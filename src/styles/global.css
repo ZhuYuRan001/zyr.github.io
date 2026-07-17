@@ -300,6 +300,10 @@
     border-top: var(--pixel-border-width) solid var(--color-border);
   }
 
+  .pixel-border-l {
+    border-left: var(--pixel-border-width) solid var(--color-border);
+  }
+
   /* ========================================
      RPG Menu Cursor
      ======================================== */

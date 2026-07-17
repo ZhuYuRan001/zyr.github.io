@@ -3,8 +3,8 @@ import { getCollection, render } from "astro:content";
 import Layout from "@components/Layout.astro";
 import TOC from "@components/TOC";
 import GiscusComments from "@components/GiscusComments";
-import { t } from "../../i18n/utils";
-import type { Locale } from "../../i18n/translations";
+import { t } from "../../../i18n/utils";
+import type { Locale } from "../../../i18n/translations";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");

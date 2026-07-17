@@ -1,15 +1,20 @@
 ---
 import ThemeToggle from "./ThemeToggle.astro";
 import MobileMenu from "./MobileMenu.astro";
+import { t, getLangSwitchUrl, localizedPath } from "../i18n/utils";
+import type { Locale } from "../i18n/translations";
 
 const base = import.meta.env.BASE_URL;
+const { locale } = Astro.props as { locale: Locale };
 
 const navItems = [
-  { label: "Home", href: `${base}` },
-  { label: "Blog", href: `${base}blog` },
-  { label: "Projects", href: `${base}projects` },
-  { label: "About", href: `${base}about` },
+  { key: "nav.home" as const, path: "" },
+  { key: "nav.blog" as const, path: "blog" },
+  { key: "nav.projects" as const, path: "projects" },
+  { key: "nav.about" as const, path: "about" },
 ];
+
+const langSwitchUrl = getLangSwitchUrl(Astro.url.pathname, locale);
 ---
 
 <header
@@ -28,10 +33,10 @@ const navItems = [
       {
         navItems.map((item) => (
           <a
-            href={item.href}
+            href={localizedPath(base, item.path, locale)}
             class="font-['Pixelify_Sans'] text-sm tracking-wide text-(--color-text-secondary) hover:text-(--color-accent) hover:bg-(--color-surface) transition-colors duration-150 px-3 py-1.5"
           >
-            {item.label}
+            {t(item.key, locale)}
           </a>
         ))
       }
@@ -80,6 +85,13 @@ const navItems = [
             ></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg
           >
         </a>
+        <a
+          href={langSwitchUrl}
+          class="font-['Pixelify_Sans'] text-xs px-2 py-1 text-(--color-text-secondary) hover:text-(--color-accent) transition-colors duration-150"
+          title={t("lang.label", locale)}
+        >
+          {t("lang.switch", locale)}
+        </a>
         <ThemeToggle />
       </div>
     </nav>
@@ -87,20 +99,3 @@ const navItems = [
     <MobileMenu />
   </div>
 </header>
-
-<script>
-  const SCROLL_THRESHOLD = 10;
-
-  function updateHeader() {
-    const header = document.getElementById("header");
-    if (window.scrollY > SCROLL_THRESHOLD) {
-      header?.setAttribute("data-scrolled", "");
-    } else {
-      header?.removeAttribute("data-scrolled");
-    }
-  }
-
-  window.addEventListener("scroll", updateHeader, { passive: true });
-  document.addEventListener("astro:after-swap", updateHeader);
-  updateHeader();
-</script>

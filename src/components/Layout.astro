@@ -2,8 +2,11 @@
 import Header from "./Header.astro";
 import Footer from "./Footer.astro";
 import { ClientRouter } from "astro:transitions";
+import { t } from "../i18n/utils";
+import type { Locale } from "../i18n/translations";
 
 const base = import.meta.env.BASE_URL;
+const locale = (Astro.currentLocale || "zh") as Locale;
 
 export interface Props {
   title?: string;
@@ -11,61 +14,162 @@ export interface Props {
 }
 
 const { title, description } = Astro.props;
+const pageTitle = title ? `${title} | ZYR` : t("site.title", locale);
+const pageDesc = description || t("site.description", locale);
 ---
 
 <!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Pixelify+Sans:wght@400;500;600;700&family=Press+Start+2P&family=Noto+Sans+SC:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Pixelify+Sans:wght@400;500;600;700&family=Press+Start+2P&family=Noto+Sans+SC:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
 
-    <!-- 在页面渲染前立即设置暗色模式，防止闪烁 -->
-    <script is:inline>
-      (function () {
-        var theme = localStorage.getItem("theme");
-        // 默认夜间模式：只有显式保存了 light 才切换到日间模式
-        if (theme !== "light") {
-          document.documentElement.classList.add("dark");
-        }
-      })();
-    </script>
+  <!-- 在页面渲染前立即设置暗色模式，防止闪烁 -->
+  <script is:inline>
+    (function () {
+      var theme = localStorage.getItem("theme");
+      // 默认夜间模式：只有显式保存了 light 才切换到日间模式
+      if (theme !== "light") {
+        document.documentElement.classList.add("dark");
+      }
+    })();
+  </script>
 
-    <title>{title ? `${title} | ZYR` : "ZYR | Pixel Quest Blog"}</title>
-    <meta
-      name="description"
-      content={description ||
-        "A retro 8-bit RPG style personal blog about frontend, design, and life."}
-    />
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDesc} />
 
-    <meta property="og:title" content={title || "ZYR | Pixel Quest Blog"} />
-    <meta
-      property="og:description"
-      content={description ||
-        "A retro 8-bit RPG style personal blog about frontend, design, and life."}
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="ZYR" />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={pageDesc} />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ZYR" />
 
-    <ClientRouter />
-  </head>
-  <body class="min-h-screen flex flex-col relative">
-    <Header />
-    <main
-      class="flex-1 pt-18 relative flex items-center justify-center"
-      style="zIndex: 2;"
+  <ClientRouter />
+</head>
+<body class="min-h-screen flex flex-col relative" data-locale={locale}>
+  <Header locale={locale} />
+  <main
+    class="flex-1 pt-18 relative flex items-center justify-center"
+    style="zIndex: 2;"
+  >
+    <slot />
+  </main>
+  <Footer locale={locale} />
+
+  <!-- 移动端抽屉菜单：放在 body 下避免 header backdrop-filter 影响 fixed 定位 -->
+  <div
+    id="mobile-drawer"
+    class="fixed inset-0 z-50 invisible pointer-events-none"
+  >
+    <div
+      id="mobile-overlay"
+      class="absolute inset-0 bg-black/40 opacity-0 transition-opacity duration-300"
     >
-      <slot />
-    </main>
-    <Footer />
-  </body>
-</html>
+    </div>
+    <div
+      id="mobile-panel"
+      class="absolute top-0 bottom-0 right-0 w-64 bg-(--color-panel) pixel-border-l p-6 transform translate-x-full transition-transform duration-300"
+    >
+      <p
+        class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-4 text-center"
+      >
+        {t("mobile.menu", locale)}
+      </p>
+      <nav class="flex flex-col gap-1">
+        <a
+          href={`${base}`}
+          class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+          >{t("nav.home", locale)}</a
+        >
+        <a
+          href={`${base}blog`}
+          class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+          >{t("nav.blog", locale)}</a
+        >
+        <a
+          href={`${base}projects`}
+          class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+          >{t("nav.projects", locale)}</a
+        >
+        <a
+          href={`${base}about`}
+          class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+          >{t("nav.about", locale)}</a
+        >
+        <a
+          href={`${base}rss.xml`}
+          class="font-['Pixelify_Sans'] text-base py-2 px-3 text-(--color-text) hover:text-(--color-accent) hover:bg-(--color-surface)"
+          >{t("nav.rss", locale)}</a
+        >
+      </nav>
+    </div>
+  </div>
+</body>
+
+<script>
+  function initHeaderScroll() {
+    function onScroll() {
+      const header = document.getElementById("header");
+      if (!header) return;
+      if (window.scrollY > 10) {
+        header.setAttribute("data-scrolled", "");
+      } else {
+        header.removeAttribute("data-scrolled");
+      }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+
+  function initMobileMenu() {
+    const btn = document.getElementById("mobile-menu-btn");
+    const drawer = document.getElementById("mobile-drawer");
+    if (!btn || !drawer) return;
+
+    const overlay = drawer.querySelector("#mobile-overlay");
+    const panel = drawer.querySelector("#mobile-panel");
+    if (!overlay || !panel) return;
+
+    let closeTimer: ReturnType<typeof setTimeout>;
+
+    btn.addEventListener("click", () => {
+      clearTimeout(closeTimer);
+      drawer.classList.remove("invisible", "pointer-events-none");
+      overlay.classList.add("opacity-100");
+      document.body.style.overflow = "hidden";
+      requestAnimationFrame(() => {
+        panel.classList.remove("translate-x-full");
+      });
+    });
+
+    const close = () => {
+      panel.classList.add("translate-x-full");
+      overlay.classList.remove("opacity-100");
+      document.body.style.overflow = "";
+      closeTimer = setTimeout(() => {
+        drawer.classList.add("invisible", "pointer-events-none");
+      }, 300);
+    };
+
+    overlay.addEventListener("click", close);
+    drawer
+      .querySelectorAll("a")
+      .forEach((a) => a.addEventListener("click", close));
+  }
+
+  initHeaderScroll();
+  initMobileMenu();
+  document.addEventListener("astro:after-swap", () => {
+    initHeaderScroll();
+    initMobileMenu();
+  });
+</script>
 
 <style is:global>
   @import "../styles/global.css";

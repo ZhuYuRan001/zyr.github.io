@@ -1,8 +1,8 @@
 ---
 import Layout from "@components/Layout.astro";
 import { getCollection, render } from "astro:content";
-import { t } from "../../i18n/utils";
-import type { Locale } from "../../i18n/translations";
+import { t } from "../../../i18n/utils";
+import type { Locale } from "../../../i18n/translations";
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects");
@@ -21,19 +21,13 @@ const locale = (Astro.currentLocale || "zh") as Locale;
   <div class="py-16 px-6">
     <article class="mx-auto max-w-180">
       <header class="mb-10 pixel-panel">
-        <div
-          class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-3 opacity-60"
-        >
+        <div class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-3 opacity-60">
           {t("projects.itemDetail", locale)}
         </div>
-        <h1
-          class="font-['Pixelify_Sans'] text-2xl md:text-3xl mb-4 text-(--color-text) font-bold"
-        >
+        <h1 class="font-['Pixelify_Sans'] text-2xl md:text-3xl mb-4 text-(--color-text) font-bold">
           {project.data.title}
         </h1>
-        <p
-          class="font-['Pixelify_Sans'] text-(--color-text-secondary) mb-4 opacity-80"
-        >
+        <p class="font-['Pixelify_Sans'] text-(--color-text-secondary) mb-4 opacity-80">
           {project.data.description}
         </p>
         <div class="flex flex-wrap gap-1 mb-3">

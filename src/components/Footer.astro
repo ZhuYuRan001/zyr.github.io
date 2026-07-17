@@ -1,5 +1,9 @@
 ---
+import { t } from "../i18n/utils";
+import type { Locale } from "../i18n/translations";
+
 const base = import.meta.env.BASE_URL;
+const { locale } = Astro.props as { locale: Locale };
 ---
 
 <footer class="pixel-border-t bg-(--color-bg-secondary) z-10">
@@ -11,7 +15,7 @@ const base = import.meta.env.BASE_URL;
       <div
         class="flex items-center gap-3 font-['Pixelify_Sans'] text-xs text-(--color-text-secondary)"
       >
-        <span>Made with</span>
+        <span>{t("footer.madeWith", locale)}</span>
         <span class="text-(--color-accent) font-bold">Astro</span>
         <span>+</span>
         <span class="text-(--color-accent) font-bold">React</span>
@@ -69,7 +73,7 @@ const base = import.meta.env.BASE_URL;
       <p
         class="font-['Press_Start_2P'] text-[8px] text-(--color-text-secondary) opacity-50"
       >
-        LV. ∞ &nbsp;-&nbsp; Press Start
+        LV. ∞ &nbsp;-&nbsp; {t("footer.pressStart", locale)}
       </p>
     </div>
   </div>
