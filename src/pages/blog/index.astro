@@ -36,7 +36,7 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
       <div class="flex flex-wrap gap-2 mb-8">
         <button
           data-filter="all"
-          class="tag-btn pixel-tag !bg-(--color-accent) !text-(--color-text) !border-(--color-accent-hover) cursor-pointer"
+          class="tag-btn pixel-tag bg-(--color-accent)! text-(--color-text)! border-(--color-accent-hover)! cursor-pointer"
         >
           All
         </button>
@@ -108,7 +108,7 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
   const searchInput = document.getElementById(
     "search-input"
   ) as HTMLInputElement;
-  const tagButtons = document.querySelectorAll(".tag-btn");
+  const tagButtons = document.querySelectorAll<HTMLElement>(".tag-btn");
   const articles = document.querySelectorAll(".article-item");
   const noResults = document.getElementById("no-results");
 
