@@ -1,22 +1,25 @@
 ---
 import Layout from "@components/Layout.astro";
+import avatar from "../static/avatar.png"; // 新增
 ---
 
 <Layout title="About" description="About ZYR - Frontend Engineer.">
   <div class="py-16 px-6">
     <div class="mx-auto max-w-180">
-      <h1 class="font-['Press_Start_2P'] text-xl mb-8 text-(--color-text) text-center">
+      <h1
+        class="font-['Press_Start_2P'] text-xl mb-8 text-(--color-text) text-center"
+      >
         STATUS
       </h1>
 
       <!-- Character Profile (RPG status screen) -->
       <div class="pixel-panel mb-8">
-        <div class="flex flex-col md:flex-row gap-8 items-center md:items-start">
+        <div
+          class="flex flex-col md:flex-row gap-8 items-center md:items-start"
+        >
           <!-- Avatar area -->
-          <div class="shrink-0 w-32 h-32 bg-(--color-surface) pixel-border flex items-center justify-center">
-            <span class="font-['Press_Start_2P'] text-[8px] text-(--color-text-secondary) text-center leading-relaxed">
-              ZYR
-            </span>
+          <div class="shrink-0 w-32 h-32 flex items-center justify-center">
+            <img src={avatar.src} alt="" class="w-full rounded-full" />
           </div>
 
           <!-- Stats -->
@@ -24,22 +27,49 @@ import Layout from "@components/Layout.astro";
             <table class="w-full border-none" style="border: none;">
               <tbody>
                 <tr class="border-none">
-                  <td class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) py-1 pr-4 border-none whitespace-nowrap">NAME</td>
-                  <td class="font-['Pixelify_Sans'] text-sm text-(--color-text) py-1 border-none">ZYR</td>
+                  <td
+                    class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) py-1 pr-4 border-none whitespace-nowrap"
+                    >NAME</td
+                  >
+                  <td
+                    class="font-['Pixelify_Sans'] text-sm text-(--color-text) py-1 border-none"
+                    >ZYR</td
+                  >
                 </tr>
                 <tr class="border-none">
-                  <td class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) py-1 pr-4 border-none whitespace-nowrap">CLASS</td>
-                  <td class="font-['Pixelify_Sans'] text-sm text-(--color-text) py-1 border-none">Frontend Engineer</td>
+                  <td
+                    class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) py-1 pr-4 border-none whitespace-nowrap"
+                    >CLASS</td
+                  >
+                  <td
+                    class="font-['Pixelify_Sans'] text-sm text-(--color-text) py-1 border-none"
+                    >Frontend Engineer</td
+                  >
                 </tr>
                 <tr class="border-none">
-                  <td class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) py-1 pr-4 border-none whitespace-nowrap">LV</td>
-                  <td class="font-['Pixelify_Sans'] text-sm text-(--color-text) py-1 border-none">42</td>
+                  <td
+                    class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) py-1 pr-4 border-none whitespace-nowrap"
+                    >LV</td
+                  >
+                  <td
+                    class="font-['Pixelify_Sans'] text-sm text-(--color-text) py-1 border-none"
+                    >42</td
+                  >
                 </tr>
                 <tr class="border-none">
-                  <td class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) py-1 pr-4 border-none whitespace-nowrap">EXP</td>
-                  <td class="font-['Pixelify_Sans'] text-sm text-(--color-text) py-1 border-none">
-                    <span class="inline-block w-32 h-3 border-2 border-(--color-border)">
-                      <span class="inline-block h-full bg-(--color-accent)" style="width: 72%;"></span>
+                  <td
+                    class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) py-1 pr-4 border-none whitespace-nowrap"
+                    >EXP</td
+                  >
+                  <td
+                    class="font-['Pixelify_Sans'] text-sm text-(--color-text) py-1 border-none"
+                  >
+                    <span
+                      class="inline-block w-32 h-3 border-2 border-(--color-border) relative"
+                    >
+                      <span
+                        class="inline-block h-full bg-(--color-accent) absolute"
+                        style="width: 72%;"></span>
                     </span>
                   </td>
                 </tr>
@@ -51,19 +81,26 @@ import Layout from "@components/Layout.astro";
 
       <!-- Bio -->
       <div class="pixel-panel mb-8">
-        <h2 class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-3">
+        <h2
+          class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-3"
+        >
           BIO
         </h2>
-        <p class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) leading-relaxed opacity-80">
-          A frontend engineer passionate about building beautiful, accessible web experiences.
-          I love working at the intersection of design and engineering.
-          When I'm not coding, you'll find me reading, taking photos, or exploring pixel art.
+        <p
+          class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) leading-relaxed opacity-80"
+        >
+          A frontend engineer passionate about building beautiful, accessible
+          web experiences. I love working at the intersection of design and
+          engineering. When I'm not coding, you'll find me reading, taking
+          photos, or exploring pixel art.
         </p>
       </div>
 
       <!-- Timeline (Quest Log) -->
       <div class="pixel-panel mb-8">
-        <h2 class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-4">
+        <h2
+          class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-4"
+        >
           QUEST LOG
         </h2>
 
@@ -72,10 +109,20 @@ import Layout from "@components/Layout.astro";
             <span class="cursor menu-cursor">▶</span>
             <div>
               <div class="flex items-center gap-3 mb-1">
-                <span class="font-['Press_Start_2P'] text-[8px] text-(--color-accent) opacity-70">2024-NOW</span>
-                <span class="font-['Pixelify_Sans'] text-sm text-(--color-text) font-bold">Senior Frontend Engineer</span>
+                <span
+                  class="font-['Press_Start_2P'] text-[8px] text-(--color-accent) opacity-70"
+                  >2024-NOW</span
+                >
+                <span
+                  class="font-['Pixelify_Sans'] text-sm text-(--color-text) font-bold"
+                  >Senior Frontend Engineer</span
+                >
               </div>
-              <p class="font-['Pixelify_Sans'] text-xs text-(--color-text-secondary) opacity-70">Company Name</p>
+              <p
+                class="font-['Pixelify_Sans'] text-xs text-(--color-text-secondary) opacity-70"
+              >
+                Company Name
+              </p>
             </div>
           </div>
 
@@ -83,10 +130,20 @@ import Layout from "@components/Layout.astro";
             <span class="cursor menu-cursor">▶</span>
             <div>
               <div class="flex items-center gap-3 mb-1">
-                <span class="font-['Press_Start_2P'] text-[8px] text-(--color-accent) opacity-70">2022-2024</span>
-                <span class="font-['Pixelify_Sans'] text-sm text-(--color-text) font-bold">Frontend Engineer</span>
+                <span
+                  class="font-['Press_Start_2P'] text-[8px] text-(--color-accent) opacity-70"
+                  >2022-2024</span
+                >
+                <span
+                  class="font-['Pixelify_Sans'] text-sm text-(--color-text) font-bold"
+                  >Frontend Engineer</span
+                >
               </div>
-              <p class="font-['Pixelify_Sans'] text-xs text-(--color-text-secondary) opacity-70">Company Name</p>
+              <p
+                class="font-['Pixelify_Sans'] text-xs text-(--color-text-secondary) opacity-70"
+              >
+                Company Name
+              </p>
             </div>
           </div>
         </div>
@@ -94,49 +151,81 @@ import Layout from "@components/Layout.astro";
 
       <!-- Skills (Equipment) -->
       <div class="pixel-panel mb-8">
-        <h2 class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-4">
+        <h2
+          class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-4"
+        >
           EQUIPMENT
         </h2>
         <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
-          {[
-            "⚔ React", "🛡 TypeScript", "🏹 Next.js", "📖 Astro",
-            "🧪 Tailwind CSS", "💊 Node.js", "🔮 GraphQL", "📦 PostgreSQL",
-            "🎒 Docker", "🎨 Figma", "🖌 Aseprite"
-          ].map((skill) => (
-            <span class="pixel-tag text-center py-2 cursor-default">
-              {skill}
-            </span>
-          ))}
+          {
+            [
+              "⚔ React",
+              "🛡 TypeScript",
+              "🏹 Next.js",
+              "📖 Astro",
+              "🧪 Tailwind CSS",
+              "💊 Node.js",
+              "🔮 GraphQL",
+              "📦 PostgreSQL",
+              "🎒 Docker",
+              "🎨 Figma",
+              "🖌 Aseprite",
+            ].map((skill) => (
+              <span class="pixel-tag text-center py-2 cursor-default">
+                {skill}
+              </span>
+            ))
+          }
         </div>
       </div>
 
       <!-- Reading List (Items) -->
       <div class="pixel-panel mb-8">
-        <h2 class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-4">
+        <h2
+          class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-4"
+        >
           ITEMS
         </h2>
-        {[
-          "Designing Data-Intensive Applications",
-          "Refactoring UI",
-          "The Pragmatic Programmer",
-          "Staff Engineer",
-        ].map((book) => (
-          <div class="rpg-list-item">
-            <span class="cursor menu-cursor">📚</span>
-            <span class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) opacity-80">{book}</span>
-          </div>
-        ))}
+        {
+          [
+            "Designing Data-Intensive Applications",
+            "Refactoring UI",
+            "The Pragmatic Programmer",
+            "Staff Engineer",
+          ].map((book) => (
+            <div class="rpg-list-item">
+              <span class="cursor menu-cursor">📚</span>
+              <span class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) opacity-80">
+                {book}
+              </span>
+            </div>
+          ))
+        }
       </div>
 
       <!-- Contact -->
       <div class="text-center">
-        <p class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) opacity-80">
+        <p
+          class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) opacity-80"
+        >
           Send a message via{" "}
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="text-(--color-accent) hover:text-(--color-accent-hover) underline">GitHub</a>
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-(--color-accent) hover:text-(--color-accent-hover) underline"
+            >GitHub</a
+          >
           {" "}or{" "}
-          <a href="mailto:hello@zyr.me" class="text-(--color-accent) hover:text-(--color-accent-hover) underline">Email</a>.
+          <a
+            href="mailto:hello@zyr.me"
+            class="text-(--color-accent) hover:text-(--color-accent-hover) underline"
+            >Email</a
+          >.
         </p>
-        <p class="font-['Press_Start_2P'] text-[8px] text-(--color-text-secondary) opacity-40 mt-4">
+        <p
+          class="font-['Press_Start_2P'] text-[8px] text-(--color-text-secondary) opacity-40 mt-4"
+        >
           Press A to continue...
         </p>
       </div>

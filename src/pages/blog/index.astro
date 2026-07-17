@@ -76,7 +76,7 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
               data-title={post.data.title.toLowerCase()}
             >
               <ArticleCard
-                href={`/blog/${post.id}`}
+                href={`/me/blog/${post.id}`}
                 title={post.data.title}
                 description={post.data.description}
                 date={post.data.date.toISOString().split("T")[0]}
@@ -89,10 +89,14 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
       </div>
 
       <div id="no-results" class="hidden pixel-panel text-center py-12 mt-4">
-        <p class="font-['Press_Start_2P'] text-xs text-(--color-text-secondary) mb-2">
+        <p
+          class="font-['Press_Start_2P'] text-xs text-(--color-text-secondary) mb-2"
+        >
           NO RESULTS
         </p>
-        <p class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) opacity-70">
+        <p
+          class="font-['Pixelify_Sans'] text-sm text-(--color-text-secondary) opacity-70"
+        >
           No matching articles found.
         </p>
       </div>
@@ -101,7 +105,9 @@ const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 </Layout>
 
 <script>
-  const searchInput = document.getElementById("search-input") as HTMLInputElement;
+  const searchInput = document.getElementById(
+    "search-input"
+  ) as HTMLInputElement;
   const tagButtons = document.querySelectorAll(".tag-btn");
   const articles = document.querySelectorAll(".article-item");
   const noResults = document.getElementById("no-results");

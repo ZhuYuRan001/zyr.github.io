@@ -13,7 +13,7 @@ const navItems = [
 ---
 
 <header
-  class="fixed top-0 left-0 right-0 z-50 h-18 flex items-center transition-colors duration-300"
+  class="fixed top-0 left-0 right-0 z-50 h-18 flex items-center transition-all duration-300 bg-transparent data-scrolled:bg-(--color-bg)/80 data-scrolled:backdrop-blur-sm data-scrolled:shadow-sm"
   id="header"
 >
   <div class="mx-auto w-full max-w-275 px-6 flex items-center justify-between">
@@ -87,3 +87,20 @@ const navItems = [
     <MobileMenu />
   </div>
 </header>
+
+<script>
+  const SCROLL_THRESHOLD = 10;
+
+  function updateHeader() {
+    const header = document.getElementById("header");
+    if (window.scrollY > SCROLL_THRESHOLD) {
+      header?.setAttribute("data-scrolled", "");
+    } else {
+      header?.removeAttribute("data-scrolled");
+    }
+  }
+
+  window.addEventListener("scroll", updateHeader, { passive: true });
+  document.addEventListener("astro:after-swap", updateHeader);
+  updateHeader();
+</script>

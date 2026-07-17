@@ -14,7 +14,9 @@ const itemIcons = ["⚔", "🛡", "🏹", "🔮", "💊", "📖"];
       <h1 class="font-['Press_Start_2P'] text-xl text-(--color-text) mb-2">
         INVENTORY
       </h1>
-      <p class="font-['Pixelify_Sans'] text-(--color-text-secondary) mb-8 opacity-70">
+      <p
+        class="font-['Pixelify_Sans'] text-(--color-text-secondary) mb-8 opacity-70"
+      >
         Equipment & Items collected on the journey.
       </p>
 
@@ -36,7 +38,7 @@ const itemIcons = ["⚔", "🛡", "🏹", "🔮", "💊", "📖"];
         {
           projects.map((project, i) => (
             <a
-              href={`/projects/${project.id}`}
+              href={`/me/projects/${project.id}`}
               class="pixel-card group block no-underline transition-transform duration-100 hover:-translate-y-0.5"
             >
               <div class="font-['Press_Start_2P'] text-[10px] text-(--color-accent) mb-3 opacity-60">
@@ -55,10 +57,14 @@ const itemIcons = ["⚔", "🛡", "🏹", "🔮", "💊", "📖"];
               </div>
               <div class="flex gap-3">
                 {project.data.github && (
-                  <span class="font-['Pixelify_Sans'] text-xs text-(--color-accent) hover:underline">GitHub</span>
+                  <span class="font-['Pixelify_Sans'] text-xs text-(--color-accent) hover:underline">
+                    GitHub
+                  </span>
                 )}
                 {project.data.demo && (
-                  <span class="font-['Pixelify_Sans'] text-xs text-(--color-accent) hover:underline">Live Demo</span>
+                  <span class="font-['Pixelify_Sans'] text-xs text-(--color-accent) hover:underline">
+                    Live Demo
+                  </span>
                 )}
               </div>
             </a>
