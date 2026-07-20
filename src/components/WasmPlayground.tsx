@@ -49,7 +49,11 @@ export default function WasmPlayground({
       // 在沙箱中执行用户代码
       const fn = new Function("exports", "log", jsCode);
       const localLogs: string[] = [];
-      fn(exports, (msg: string) => localLogs.push(msg));
+      const fnResult = fn(exports, (msg: string) => localLogs.push(msg));
+      // 支持异步代码（如 Web Worker 回调）
+      if (fnResult instanceof Promise) {
+        await fnResult;
+      }
 
       const allLogs = [...logs, ...localLogs];
       setOutput(allLogs.join("\n") || "(无输出)");

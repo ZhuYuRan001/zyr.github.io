@@ -154,24 +154,200 @@ log("JS 读取地址 4: " + view[1]);`}
 
 这意味着你可以在 WASM 中处理大量数据（如图像像素），然后让 JS 读取结果来渲染。**零拷贝**，非常高效。
 
+### 示例 4：性能对比 — WASM vs JS vs Worker
+
+这个例子对比三种方式执行**相同计算密集型任务**（3000 万次循环累加）的耗时：
+
+- **WASM**：二进制指令直接在浏览器虚拟机中执行，接近原生速度
+- **纯 JS**：JIT 编译，有类型检查和优化开销
+- **Web Worker**：在后台线程执行，不阻塞主线程，但执行速度与纯 JS 相同
+
+<WasmPlayground
+  title="示例 4：性能对比"
+  wasmHex="0061736d0100000001060160017f017f03020100070b0107636f6d7075746500000a22012001017f410021010340200120006a2101200041016b220041004a0d000b20010b"
+  watCode={`(module
+  (func (export "compute") (param i32) (result i32)
+    (local i32)
+    i32.const 0
+    local.set 1         ;; sum = 0
+    loop $loop
+      local.get 1
+      local.get 0
+      i32.add           ;; sum += n
+      local.set 1
+      local.get 0
+      i32.const 1
+      i32.sub           ;; n--
+      local.tee 0
+      i32.const 0
+      i32.gt_s          ;; n > 0 ?
+      br_if $loop       ;; 是则继续循环
+    end
+    local.get 1))`}
+  jsCode={`const ITERATIONS = 30000000;
+
+// 辅助：纯 JS 版本
+function jsCompute(n) {
+  var sum = 0;
+  for (var i = n; i > 0; i--) sum += i;
+  return sum;
+}
+
+// 1. WASM 测试
+log("=== 累加 " + ITERATIONS.toLocaleString() + " 次循环 ===");
+var wasmStart = performance.now();
+var wasmResult = exports.compute(ITERATIONS);
+var wasmTime = performance.now() - wasmStart;
+log("WASM  : " + wasmTime.toFixed(1) + "ms  (结果: " + wasmResult + ")");
+
+// 2. 纯 JS 测试
+var jsStart = performance.now();
+var jsResult = jsCompute(ITERATIONS);
+var jsTime = performance.now() - jsStart;
+log("纯 JS : " + jsTime.toFixed(1) + "ms  (结果: " + jsResult + ")");
+
+log("\\nWASM 比纯 JS 快 " + (jsTime / wasmTime).toFixed(2) + "x");
+
+// 3. Web Worker 测试（异步，不阻塞主线程）
+return new Promise(function(resolve) {
+  var workerCode = 'self.onmessage=function(e){var n=e.data,s=0;for(var i=n;i>0;i--)s+=i;self.postMessage(s)}';
+  var blob = new Blob([workerCode],{type:"application/javascript"});
+  var worker = new Worker(URL.createObjectURL(blob));
+  var workerStart = performance.now();
+  worker.postMessage(ITERATIONS);
+  worker.onmessage = function(e) {
+    var workerTime = performance.now() - workerStart;
+    log("Worker: " + workerTime.toFixed(1) + "ms  (结果: " + e.data + ")");
+    log("Worker 速度与纯 JS 相近，但计算在后台线程，\\n不阻塞主线程，页面保持响应。");
+    resolve();
+  };
+});`}
+/>
+
+**WASM 为什么更快？**
+
+1. **预编译**：WASM 在 `instantiate()` 阶段就已经完成编译，执行时无需 JIT 预热
+2. **静态类型**：WASM 指令直接操作 `i32`/`f64` 等固定类型，无需运行时类型检查
+3. **无 GC**：线性内存无需垃圾回收，没有 GC 暂停
+4. **紧凑指令集**：二进制格式更小，解码更快
+
+**Worker 的价值不在于速度，而在于不阻塞主线程。** 对于需要保持 UI 流畅的场景（如动画、输入响应），把重计算放到 Worker 中是更好的选择。Worker + WASM 的组合（在 Worker 中加载 WASM）则兼具两者优势。
+
 ## 在 JS 中加载 WASM
 
-除了 `WebAssembly.instantiate()`，还有另一个常用方法：
+加载 WASM 有多种方式，取决于你的项目环境。
+
+### 方式 1：原生 fetch（纯 JS/TS，无需构建工具）
+
+最灵活、最通用的方式，在任意 JS 运行环境中都能用：
 
 ```js
-// 方法 1: 一步到位
-const { instance } = await WebAssembly.instantiate(wasmBytes);
+// 基本用法
+const response = await fetch("/path/to/module.wasm");
+const buffer = await response.arrayBuffer();
+const { instance } = await WebAssembly.instantiate(buffer);
 
-// 方法 2: 带 imports（让 WASM 调用 JS 函数）
+// 调用导出的函数
+console.log(instance.exports.add(1, 2));
+```
+
+带 `importObject` 让 WASM 调用 JS 函数：
+
+```js
 const importObject = {
   env: {
+    // 让 WASM 可以调用 console.log
     log_number: (n) => console.log("WASM says:", n),
+    // 提供三角函数等 WASM 没有的内置函数
+    sin: Math.sin,
   },
 };
-const { instance } = await WebAssembly.instantiate(wasmBytes, importObject);
+
+const response = await fetch("/module.wasm");
+const buffer = await response.arrayBuffer();
+const { instance } = await WebAssembly.instantiate(buffer, importObject);
 ```
 
 `importObject` 允许 WASM 模块调用 JavaScript 函数，这是双向通信的基础。
+
+如果 WASM 操作了共享内存，通过 `instance.exports.memory` 获取：
+
+```js
+const memory = instance.exports.memory;
+// JS 可以读写同一块 ArrayBuffer
+const view = new Uint32Array(memory.buffer);
+view[0] = 42;
+```
+
+### 方式 2：Vite 构建工具
+
+Vite 对 `.wasm` 文件有**原生支持**，你可以像导入模块一样导入它——Vite 自动处理 fetch、编译和导出绑定：
+
+```js
+// 默认导出是初始化函数，具名导出是 WASM 函数
+import init, { add, fibonacci } from "./math.wasm";
+
+await init(); // 必须先初始化
+console.log(add(1, 2)); // 之后才能调用
+```
+
+`init` 是 Vite 自动生成的初始化函数（负责 fetch + instantiate），`add` / `fibonacci` 是 WASM 模块中 `(export "add" ...)` 的函数。**必须 `await init()` 后才可调用。**
+
+如果不想阻塞模块加载，可以用异步 import：
+
+```js
+const { default: init, add } = await import("./math.wasm");
+await init();
+```
+
+### 方式 3：Webpack 构建工具
+
+Webpack 4+ 支持 WASM，但需要开启实验特性。在 `webpack.config.js` 中：
+
+```js
+module.exports = {
+  experiments: {
+    asyncWebAssembly: true, // 启用异步 WASM
+    // syncWebAssembly: true,  // 同步模式（不推荐，会阻塞）
+  },
+};
+```
+
+然后在代码中直接 import：
+
+```js
+// 异步导入（推荐）
+import("./math.wasm").then(({ add }) => {
+  console.log(add(1, 2));
+});
+
+// 顶层 await 也可以
+const { add } = await import("./math.wasm");
+```
+
+注意 Webpack 的 WASM 文件大小会被限制（默认 4KB 以内内联），更大的文件会自动走异步 chunk 加载。
+
+### 方式 4：Vite/Webpack 中配合 Worker
+
+在构建工具中，可以把 WASM 和 Worker 结合起来，同时享受工具链和后台线程的优势：
+
+```js
+// worker.js
+import init, { compute } from "./heavy.wasm";
+
+self.onmessage = async (e) => {
+  await init();
+  const result = compute(e.data);
+  self.postMessage(result);
+};
+
+// 主线程
+const worker = new Worker(new URL("./worker.js", import.meta.url));
+worker.postMessage(30000000);
+worker.onmessage = (e) => console.log("结果:", e.data);
+```
+
+Vite 的 `new URL(..., import.meta.url)` 和 Webpack 的 `new Worker(...)` 都会自动处理 Worker 和 WASM 的打包。
 
 ## 编译语言到 WASM
 
