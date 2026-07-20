@@ -1,0 +1,256 @@
+---
+title: "WebAssembly 入门指南：让浏览器跑得更快"
+description: "从零开始理解 WebAssembly，通过可在线运行的交互示例，掌握 WASM 的核心概念：模块、内存、类型系统与 JavaScript 互操作。"
+date: 2026-07-20
+tags: ["WASM", "WebAssembly", "Frontend"]
+---
+
+import WasmPlayground from "@components/WasmPlaygroundWrapper.astro";
+
+## 什么是 WebAssembly？
+
+**WebAssembly**（简称 WASM）是一种可以在浏览器中高效运行的**二进制指令格式**。它不是用来替代 JavaScript 的，而是作为 JavaScript 的补充，让你可以把计算密集型的工作交给 WASM 来处理。
+
+简单来说：WASM 是一个**编译目标**——你可以用 C、C++、Rust、Go 等语言编写代码，然后编译成 `.wasm` 文件，在浏览器中以**接近原生速度**运行。
+
+### 为什么需要 WASM？
+
+JavaScript 是解释型语言，尽管 JIT 编译器让它越来越快，但在某些场景下仍然不够用：
+
+- **游戏引擎**：物理模拟、碰撞检测需要大量计算
+- **图像/视频处理**：逐像素处理高分辨率媒体
+- **密码学**：加密解密需要高性能数学运算
+- **CAD/3D 建模**：复杂几何计算
+- **科学计算**：数据分析、模拟
+
+WASM 的二进制格式可以**更快地被解码和执行**，同时它采用**静态类型**，避免了 JavaScript 中大量的类型检查和运行时优化开销。
+
+## WASM 核心概念
+
+在深入代码之前，先了解几个核心概念：
+
+| 概念              | 说明                                                                       |
+| ----------------- | -------------------------------------------------------------------------- |
+| **Module**        | 编译后的 `.wasm` 文件，包含函数、内存、全局变量等                          |
+| **Memory**        | WASM 的线性内存空间，以"页"（64KB）为单位，可通过 `ArrayBuffer` 与 JS 共享 |
+| **Table**         | 函数引用表，用于实现函数指针和动态分发                                     |
+| **Type System**   | WASM 仅支持四种数值类型：`i32`、`i64`、`f32`、`f64`                        |
+| **Import/Export** | Module 可以导入 JS 函数，也可以导出自己的函数给 JS 调用                    |
+
+### WASM 文本格式（WAT）
+
+WAT（WebAssembly Text Format）是 WASM 的可读文本表示。下面是一个最简单的例子——它将两个 `i32` 整数相加并返回结果：
+
+```wat
+(module
+  (func (export "add") (param i32 i32) (result i32)
+    local.get 0   ;; 获取第一个参数
+    local.get 1   ;; 获取第二个参数
+    i32.add))     ;; 执行整数加法
+```
+
+这个 `(module)` 定义了一个 WASM 模块，里面有：
+
+- 一个函数，接收两个 `i32` 参数，返回一个 `i32`
+- 用 `(export "add")` 把这个函数导出，名字叫 `add`
+- 函数体用 `local.get` 读取参数，`i32.add` 执行加法
+
+## 交互示例
+
+下面每个示例都是**可在线运行**的。点击"运行"按钮，你就能看到 WASM 和 JavaScript 如何协作。
+
+### 示例 1：最简单的 WASM 函数
+
+<WasmPlayground
+  title="示例 1：两数相加"
+  wasmHex="0061736d0100000001070160027f7f017f030201000707010361646400000a09010700200020016a0b"
+  watCode={`(module
+  (func (export "add") (param i32 i32) (result i32)
+    local.get 0
+    local.get 1
+    i32.add))`}
+  jsCode={`// 调用 WASM 导出的 add 函数
+const a = 42;
+const b = 58;
+const result = exports.add(a, b);
+log(a + " + " + b + " = " + result);
+
+// 再测几组
+log("100 + 200 = " + exports.add(100, 200));
+log("999 + 1 = " + exports.add(999, 1));`}
+/>
+
+这个例子展示了最基本的 WASM 用法：
+
+1. 浏览器通过 `WebAssembly.instantiate()` 加载 WASM 二进制
+2. 从 `instance.exports` 获取导出的 `add` 函数
+3. 像调用普通 JavaScript 函数一样调用它
+
+WASM 会进行类型检查——如果你传入字符串或其他类型，调用会直接失败。
+
+### 示例 2：单参数运算
+
+<WasmPlayground
+  title="示例 2：计算平方"
+  wasmHex="0061736d0100000001060160017f017f03020100070a010673717561726500000a09010700200020006c0b"
+  watCode={`(module
+  (func (export "square") (param i32) (result i32)
+    local.get 0
+    local.get 0
+    i32.mul))`}
+  jsCode={`// 计算几个数的平方
+for (let i = 1; i <= 10; i++) {
+  log(i + "² = " + exports.square(i));
+}
+
+// WASM 函数可以被赋值、传参，和普通函数一样
+const sq = exports.square;
+log("\\n25² = " + sq(25));`}
+/>
+
+`i32.mul` 是 WASM 的乘法指令。WASM 使用**栈式虚拟机**模型——操作数先入栈，指令再消费栈顶的值。`local.get 0` 会把同一个参数入栈两次，`i32.mul` 把它们相乘。
+
+### 示例 3：共享内存
+
+<WasmPlayground
+  title="示例 3：读写 WASM 内存"
+  wasmHex="0061736d01000000010b0260027f7f0060017f017f03030200010503010001071903066d656d6f727902000573746f72650000046c6f616400010a13020900200020013602000b070020002802000b"
+  watCode={`(module
+  (memory (export "memory") 1)        ;; 1 页 = 64KB
+  (func (export "store") (param i32 i32)
+    local.get 0    ;; 地址
+    local.get 1    ;; 值
+    i32.store)     ;; 将 32 位整数写入内存
+  (func (export "load") (param i32) (result i32)
+    local.get 0    ;; 地址
+    i32.load))     ;; 从内存读取 32 位整数`}
+  jsCode={`// WASM 的线性内存以 ArrayBuffer 形式暴露给 JS
+const memory = exports.memory;
+// 创建一个 Uint32Array 视图来读写 32 位整数
+const view = new Uint32Array(memory.buffer);
+
+// 用 WASM 的 store 函数写入
+exports.store(0, 42); // 地址 0
+exports.store(4, 100); // 地址 4 (每个 i32 占 4 字节)
+exports.store(8, 256); // 地址 8
+
+// 用 WASM 的 load 函数读取
+log("地址 0: " + exports.load(0));
+log("地址 4: " + exports.load(4));
+log("地址 8: " + exports.load(8));
+
+// JS 也可以直接读写同一块内存！
+view[3] = 999; // 地址 12
+log("\\nJS 写入地址 12: " + exports.load(12));
+log("JS 读取地址 4: " + view[1]);`}
+/>
+
+这个例子展示了 WASM 和 JavaScript **共享内存**的关键能力：
+
+- `(memory 1)` 申请了 **1 页（64KB）** 线性内存
+- `i32.store` 将 32 位整数写入指定地址
+- `i32.load` 从指定地址读取 32 位整数
+- JS 通过 `exports.memory.buffer` 获取这块内存的 `ArrayBuffer`，直接读写
+
+这意味着你可以在 WASM 中处理大量数据（如图像像素），然后让 JS 读取结果来渲染。**零拷贝**，非常高效。
+
+## 在 JS 中加载 WASM
+
+除了 `WebAssembly.instantiate()`，还有另一个常用方法：
+
+```js
+// 方法 1: 一步到位
+const { instance } = await WebAssembly.instantiate(wasmBytes);
+
+// 方法 2: 带 imports（让 WASM 调用 JS 函数）
+const importObject = {
+  env: {
+    log_number: (n) => console.log("WASM says:", n),
+  },
+};
+const { instance } = await WebAssembly.instantiate(wasmBytes, importObject);
+```
+
+`importObject` 允许 WASM 模块调用 JavaScript 函数，这是双向通信的基础。
+
+## 编译语言到 WASM
+
+在实际项目中，你通常不会手写 WAT。以下是主流编译方案：
+
+### Rust → WASM
+
+```bash
+# 使用 wasm-pack
+cargo install wasm-pack
+wasm-pack build --target web
+```
+
+```rust
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+pub fn fibonacci(n: u32) -> u32 {
+    match n {
+        0 => 0,
+        1 => 1,
+        _ => fibonacci(n - 1) + fibonacci(n - 2),
+    }
+}
+```
+
+### C/C++ → WASM
+
+```bash
+# 使用 Emscripten
+emcc hello.c -o hello.js -s WASM=1
+```
+
+```c
+#include <emscripten.h>
+
+EMSCRIPTEN_KEEPALIVE
+int add(int a, int b) {
+    return a + b;
+}
+```
+
+### AssemblyScript
+
+AssemblyScript 是 TypeScript 的子集，专门编译到 WASM：
+
+```typescript
+// AssemblyScript 代码
+export function add(a: i32, b: i32): i32 {
+  return a + b;
+}
+```
+
+```bash
+npx asc add.ts -o add.wasm --optimize
+```
+
+## WASM 的限制
+
+虽然 WASM 很强大，但它也有一些限制需要了解：
+
+1. **只能操作数值**：WASM 不能直接操作 DOM、不能发起网络请求——这些都需要通过调用导入的 JS 函数来完成
+2. **不支持垃圾回收**：线性内存需要手动管理（不过 GC 提案正在推进中）
+3. **类型有限**：仅支持 `i32`、`i64`、`f32`、`f64`。复杂类型（字符串、对象）需要编码为内存中的字节
+4. **调试困难**：相比 JS，WASM 的调试工具还不够成熟
+
+## 什么时候用 WASM？
+
+WASM 并不是"更好的 JavaScript"。把整个应用都编译成 WASM 通常没有意义。它最适合用在：
+
+- 识别出**性能瓶颈**在计算密集的部分
+- 有**现成的 C/Rust 库**想在浏览器中复用
+- 需要**跨语言复用**同一套计算逻辑（前端 + 后端 + CLI）
+
+常见场景：图像编辑器（Figma）、游戏引擎（Unity WebGL）、代码编辑器、CAD 查看器等。
+
+## 延伸阅读
+
+- [WebAssembly 官方规范](https://webassembly.github.io/spec/)
+- [MDN WebAssembly 指南](https://developer.mozilla.org/en-US/docs/WebAssembly)
+- [Rust + WASM 入门](https://rustwasm.github.io/docs/book/)
+- [Emscripten 文档](https://emscripten.org/docs/)

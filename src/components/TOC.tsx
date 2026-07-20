@@ -54,10 +54,10 @@ export default function TOC() {
         TOC
       </h4>
       <ul className="space-y-0">
-        {headings.map((h) => (
-          <li key={h.id}>
+        {headings.map((h, i) => (
+          <li key={h.id || `toc-h${i}`}>
             <a
-              href={`#${h.id}`}
+              href={h.id ? `#${h.id}` : "#"}
               data-depth={h.depth}
               className={`${activeId === h.id ? "active" : ""}`}
               style={{ paddingLeft: h.depth === 3 ? "1.25rem" : "0" }}

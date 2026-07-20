@@ -1,0 +1,14 @@
+---
+import WasmPlayground from "./WasmPlayground";
+
+interface Props {
+  title: string;
+  watCode: string;
+  jsCode: string;
+  wasmHex: string;
+}
+
+const { title, watCode, jsCode, wasmHex } = Astro.props;
+---
+
+<WasmPlayground client:load title={title} watCode={watCode} jsCode={jsCode} wasmHex={wasmHex} />
